@@ -5,9 +5,11 @@
 #include <sstream>
 #include <queue>
 #include <utility>
+#include <chrono>
 using namespace std;
 
-
+typedef chrono::high_resolution_clock Clock;
+typedef Clock::time_point ClockTime;
 bool isFloat(string str);
 bool isAlph(string str);
 enum Color { RED, BLACK };
@@ -672,14 +674,14 @@ void RBTree::searchGenre(string genre, Movie* root, Movie* stableRoot) {
 	 */
 }
 
-void readCSV(RBTree* tree);
+void readCSV(RBTree* tree, HashTable hash);
 
 int main()
 {
 	HashTable hash(300000);
 	RBTree tree;
 	RBTree* treePoint = &tree;
-	readCSV(treePoint);
+	readCSV(treePoint, hash);
 	treePoint->root->PrintMovie();
 
 	string input = "";
@@ -699,21 +701,30 @@ int main()
 			cin.ignore();
 			getline(cin, movieTitle);
 			// search
+			//ClockTime start = Clock::now();
 			treePoint->searchMovieTitle(movieTitle, treePoint->root);
+			//ClockTime end = Clock::now();
+			//cout << chrono::duration_cast<chrono::microseconds>(start - end).count();
 			break;
 		case 2:
 			cout << "Insert an actor: ";
 			cin.ignore();
 			getline(cin, movieActor);
 			// search
+			//ClockTime start2 = Clock::now();
 			treePoint->searchMovieActor(movieActor, treePoint->root, treePoint->root);
+			//ClockTime end2 = Clock::now();
+			//cout << chrono::duration_cast<chrono::microseconds>(start2 - end2).count();
 			break;
 		case 3:
 			cout << "Insert a genre: ";
 			cin.ignore();
 			getline(cin, movieGenre);
 			// search
+			//ClockTime start3 = Clock::now();
 			treePoint->searchGenre(movieGenre, treePoint->root, treePoint->root);
+			//ClockTime end3 = Clock::now();
+			//cout << chrono::duration_cast<chrono::microseconds>(start3 - end3).count();
 			break;
 		}
 	}
@@ -856,7 +867,7 @@ void readCSV(RBTree* tree, HashTable hash)
 				movie.setScreenplay(_screenplay_writer_name);
 				movie.setEditor(_editor_name);
 
-				hash.Insert(movie);
+				//hash.Insert(movie);
 				//node.PrintMovie();
 				// Add to tree.
 
