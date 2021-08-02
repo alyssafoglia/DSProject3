@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <queue>
+#include <utility>
 using namespace std;
 
 
@@ -587,3 +588,55 @@ bool isAlph(string str) // isaplha() function gives error on different language 
 	}
 return true;
 }
+
+class HashTable {
+public:
+    //the number of bins in the table
+    unsigned int capacity;
+    //this is the array used for the hash table. The vector component is necessary for chaining
+    vector<pair<string, Movie>>* arr = new vector<pair<string, Movie>>[capacity];
+    //the number of movies added to the table
+    unsigned int movieCount;
+
+    //constructor
+    HashTable(unsigned int capacity) {
+        this->capacity = capacity;
+    }
+
+    //converts key to an index
+    unsigned int Hash(string key) {
+        unsigned int index = 0;
+
+        for (int i = 0; i < key.size(); i++) {
+            index += key[i];
+        }
+
+        index = index % capacity;
+        return index;
+    }
+
+    //inserts a movie into the hash table
+    void Insert(Movie movie) {
+        pair<string, Movie> pair;
+        pair.first = movie.title;
+        pair.second = movie;
+        arr[Hash(pair.first)].push_back(pair);
+
+        //increment the movie count
+        movieCount++;
+    }
+
+    //deletes a movie
+    void Delete(Movie movie) {
+        int index = Hash(movie.title);
+        for (int i = 0; i < arr[index].size(); i++) {
+            if (arr[index][i].first == movie.title) {
+                arr[index].erase(arr[index].begin() + i);
+            }
+        }
+
+        //decrement the movie count
+        movieCount--;
+    }
+
+};
