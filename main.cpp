@@ -82,6 +82,134 @@ public:
 	string editor_name;
 };
 
+class HashTable {
+public:
+    //the number of bins in the table
+    unsigned int capacity;
+    //this is the array used for the hash table. The vector component is necessary for chaining
+    vector<pair<string, Movie>>* arr = new vector<pair<string, Movie>>[capacity];
+    //the number of movies added to the table
+    unsigned int movieCount;
+
+    //constructor
+    HashTable(unsigned int capacity) {
+        this->capacity = capacity;
+    }
+
+    //converts key to an index
+    unsigned int Hash(string key) {
+        unsigned int index = 0;
+
+        for (int i = 0; i < key.size(); i++) {
+            index += key[i];
+        }
+
+        index = index % capacity;
+        return index;
+    }
+
+    //inserts a movie into the hash table
+    void Insert(Movie movie) {
+        pair<string, Movie> pair;
+        pair.first = movie.title;
+        pair.second = movie;
+        arr[Hash(pair.first)].push_back(pair);
+
+        //increment the movie count
+        movieCount++;
+    }
+
+    //deletes a movie
+    void Delete(Movie movie) {
+        int index = Hash(movie.title);
+        for (int i = 0; i < arr[index].size(); i++) {
+            if (arr[index][i].first == movie.title) {
+                arr[index].erase(arr[index].begin() + i);
+            }
+        }
+
+        //decrement the movie count
+        movieCount--;
+    }
+
+    //used to print out a movie's info
+    void Print(Movie movie) {
+        cout << "Genres: " << movie.genres << endl;
+        cout << "Popularity: " << movie.popularity << endl;
+        cout << "Revenue: " << movie.revenue << endl;
+        cout << "Runtime: " << movie.runtime << endl;
+        cout << "Title: " << movie.title << endl;
+        cout << "Actor 1: " << movie.actor1_name << endl;
+        cout << "Actor 2: " << movie.actor2_name << endl;
+        cout << "Actor 3: " << movie.actor3_name << endl;
+        cout << "Actor 4: " << movie.actor4_name << endl;
+        cout << "Actor 5: " << movie.actor5_name << endl;
+        cout << "Director: " << movie.director_name << endl;
+        cout << "Producer: " << movie.producer_name << endl;
+        cout << "Screenplay by: " << movie.screenplay_writer_name << endl;
+        cout << "Editor: " << movie.editor_name << endl;
+    }
+
+    //this method is needed to search for a particular movie
+    void SearchTitle(Movie movie) {
+        int index = Hash(movie.title);
+        bool printed = false;
+
+        for (int i = 0; i < arr[index].size(); i++) {
+            if (arr[index][i].first == movie.title) {
+                Print(movie);
+                printed = true;
+            }
+        }
+
+        if (!printed) {
+            cout << "There are no documented movies with that genre." << endl;
+
+        }
+    }
+
+    //this method is needed to search for a particular movie by genre
+    void searchGenre(string genres) {
+        bool printed = false;
+        for (int i = 0; i < capacity; i++) {
+            for (int j = 0; j < arr[i].size(); j++) {
+                if (arr[i][j].second.genres == genres) {
+                    Print(arr[i][j].second);
+                    printed = true;
+                }
+            }
+
+        }
+        if (!printed) {
+            cout << "There are no documented movies with that genre." << endl;
+        }
+
+    }
+
+    //this method is needed to search for a movie by actor
+    void searchActor(string actor) {
+        bool printed = false;
+
+        for (int i = 0; i < capacity; i++) {
+            for (int j = 0; j < arr[i].size(); j++) {
+                if (arr[i][j].second.actor1_name == actor ||
+                    arr[i][j].second.actor2_name == actor ||
+                    arr[i][j].second.actor3_name == actor ||
+                    arr[i][j].second.actor4_name == actor ||
+                    arr[i][j].second.actor5_name == actor) {
+                    Print(arr[i][j].second);
+                    printed = true;
+                }
+            }
+        }
+
+        if (!printed) {
+            cout << "There are no documented movies with that actor." << endl;
+        }
+    }
+
+};
+
 struct RBTree {
 	Movie* root;
 	void rotateLeft(Movie* node1, Movie* node2);
@@ -583,7 +711,7 @@ int main()
 		}
 	}
 }
-void readCSV(RBTree* tree)
+void readCSV(RBTree* tree, HashTable hash)
 {
 	fstream inClean("AllMoviesDetailsCleaned.csv");
 	fstream inRaw("AllMoviesCastingRaw.csv");
@@ -599,6 +727,7 @@ void readCSV(RBTree* tree)
 	// can lower conditional when testing so the entire file doesn't need to be run every time. Takes appprox 2mins 10s without adding to data structure
 	while (temp < 6) { //328842 is max, error after 198152-> correlates to id: 314304
 		Movie* node = new Movie();
+		Movie movie = Movie();
 
 		string _idC = "";
 		string _genres = "";
@@ -704,6 +833,21 @@ void readCSV(RBTree* tree)
 			node->setScreenplay(_screenplay_writer_name);
 			node->setEditor(_editor_name);
 			
+			movie.setGenres(_genres);
+                	movie.setPop(_popularity);
+                	movie.setRevenue(_revenue);
+                	movie.setRuntime(_runtime);
+                	movie.setTitle(_title);
+                	movie.setActor1(_actor1_name);
+                	movie.setActor2(_actor2_name);
+                	movie.setActor3(_actor3_name);
+                	movie.setActor4(_actor4_name);
+                	movie.setActor5(_actor5_name);
+                	movie.setDirector(_director_name);
+                	movie.setProducer(_producer_name);
+                	movie.setScreenplay(_screenplay_writer_name);
+                	movie.setEditor(_editor_name);
+			
 			//node.PrintMovie();
 
 			// Add to tree.
@@ -756,54 +900,3 @@ bool isAlph(string str) // isaplha() function gives error on different language 
 return true;
 }
 
-class HashTable {
-public:
-    //the number of bins in the table
-    unsigned int capacity;
-    //this is the array used for the hash table. The vector component is necessary for chaining
-    vector<pair<string, Movie>>* arr = new vector<pair<string, Movie>>[capacity];
-    //the number of movies added to the table
-    unsigned int movieCount;
-
-    //constructor
-    HashTable(unsigned int capacity) {
-        this->capacity = capacity;
-    }
-
-    //converts key to an index
-    unsigned int Hash(string key) {
-        unsigned int index = 0;
-
-        for (int i = 0; i < key.size(); i++) {
-            index += key[i];
-        }
-
-        index = index % capacity;
-        return index;
-    }
-
-    //inserts a movie into the hash table
-    void Insert(Movie movie) {
-        pair<string, Movie> pair;
-        pair.first = movie.title;
-        pair.second = movie;
-        arr[Hash(pair.first)].push_back(pair);
-
-        //increment the movie count
-        movieCount++;
-    }
-
-    //deletes a movie
-    void Delete(Movie movie) {
-        int index = Hash(movie.title);
-        for (int i = 0; i < arr[index].size(); i++) {
-            if (arr[index][i].first == movie.title) {
-                arr[index].erase(arr[index].begin() + i);
-            }
-        }
-
-        //decrement the movie count
-        movieCount--;
-    }
-
-};
