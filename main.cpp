@@ -14,7 +14,7 @@ bool isFloat(string str);
 bool isAlph(string str);
 enum Color { RED, BLACK };
 
-class Movie {
+class Movie{
 public:
 	Movie();
 	Movie(string _genres, float _popularity, string _revenue, int _runtime, string _title, string actor1, string actor2, string actor3, string actor4, string actor5, string director, string producer, string screenplay, string editor);
@@ -35,7 +35,7 @@ public:
 	void setScreenplay(string _screenplay);
 	void setEditor(string _editor);
 	//for tree
-	Movie* left, * right, * parent;
+	Movie *left, *right, *parent;
 	bool color;
 public:
 	// from Clean in order listed
@@ -221,10 +221,10 @@ struct RBTree {
 		root = NULL;
 	}
 	void insert(Movie* newNode);
-	Movie* BSTInsert(Movie* root, Movie* newNode);
-	void searchMovieTitle(string title, Movie* root);
-	void searchMovieActor(string actor, Movie* root, Movie* stableRoot);
-	void searchGenre(string genre, Movie* root, Movie* stableRoot);
+	Movie* BSTInsert(Movie* &root, Movie* &newNode);
+    void searchMovieTitle(string title, Movie* root);
+    void searchMovieActor(string actor, Movie* root,Movie* stableRoot);
+    void searchGenre(string genre, Movie* root, Movie* stableRoot);
 };
 
 Movie::Movie()
@@ -242,10 +242,10 @@ Movie::Movie()
 	producer_name = "";
 	screenplay_writer_name = "";
 	editor_name = "";
-	left = nullptr;
-	right = nullptr;
-	parent = nullptr;
-	color = RED;
+    left = nullptr;
+    right= nullptr;
+    parent= nullptr;
+    color=RED;
 }
 
 Movie::Movie(string _genres, float _popularity, string _revenue, int _runtime, string _title, string actor1, string actor2, string actor3, string actor4, string actor5, string director, string producer, string screenplay, string editor)
@@ -264,13 +264,13 @@ Movie::Movie(string _genres, float _popularity, string _revenue, int _runtime, s
 	producer_name = producer;
 	screenplay_writer_name = screenplay;
 	editor_name = editor;
-	left = nullptr;
-	right = nullptr;
-	parent = nullptr;
-	color = RED;
+    left = nullptr;
+    right= nullptr;
+    parent= nullptr;
+    color=RED;
 }
 
-void Movie::operator=(Movie* next)
+void Movie::operator=(Movie* next) 
 {
 	genres = next->genres;
 	popularity = next->popularity;
@@ -443,7 +443,7 @@ void RBTree::fixColor(Movie* root, Movie* newNode) {
 	root->color = BLACK;
 
 }
-Movie* RBTree::BSTInsert(Movie* root, Movie* newNode) {
+Movie* RBTree::BSTInsert(Movie* &root, Movie* &newNode) {
 	if (root == nullptr) { //if tree is empty return new node
 		return newNode;
 	}
@@ -577,6 +577,7 @@ void RBTree::searchMovieActor(string actor, Movie* root, Movie* stableRoot) {
 			curr=curr->right;
 		}
 	}
+
 	if (!vecToPrint.empty()) {
 		sort(vecToPrint.begin(), vecToPrint.end());
 		for (int i = 0; i < vecToPrint.size(); i++) {
