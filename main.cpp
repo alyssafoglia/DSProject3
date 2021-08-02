@@ -33,7 +33,7 @@ public:
 	void setScreenplay(string _screenplay);
 	void setEditor(string _editor);
 	//for tree
-	Movie* left, * right, * parent;
+	Movie *left, *right, *parent;
 	bool color;
 public:
 	// from Clean in order listed
@@ -112,6 +112,10 @@ Movie::Movie()
 	producer_name = "";
 	screenplay_writer_name = "";
 	editor_name = "";
+    left = nullptr;
+    right= nullptr;
+    parent= nullptr;
+    color=RED;
 }
 
 Movie::Movie(string _genres, float _popularity, string _revenue, int _runtime, string _title, string actor1, string actor2, string actor3, string actor4, string actor5, string director, string producer, string screenplay, string editor)
@@ -130,6 +134,10 @@ Movie::Movie(string _genres, float _popularity, string _revenue, int _runtime, s
 	producer_name = producer;
 	screenplay_writer_name = screenplay;
 	editor_name = editor;
+    left = nullptr;
+    right= nullptr;
+    parent= nullptr;
+    color=RED;
 }
 
 void Movie::operator=(Movie* next) 
@@ -542,7 +550,7 @@ int main()
 	RBTree tree;
 	RBTree* treePoint = &tree;
 	readCSV(treePoint);
-	treePoint->root->PrintMovie();
+	//treePoint->root->PrintMovie();
 
 	string input = "";
 	while (input != "-1") {
@@ -699,7 +707,7 @@ void readCSV(RBTree* tree)
 
 			// Add to tree.
 			
-			cout << count << endl;
+			//cout << count << endl;
 			tree->insert(node);
 			//node->PrintMovie();
 			
