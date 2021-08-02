@@ -258,18 +258,18 @@ void RBTree::rotateRight(Movie* root, Movie* newNode) {
 	newNode->parent = leftPT;
 }
 void RBTree::fixColor(Movie* root, Movie* newNode) {
-	Movie* parentPointer = NULL;
-	Movie* grandParentPointer = NULL;
-
-	while ((newNode != root) && (newNode->color != BLACK) && (newNode->parent->color == RED)) {
+    Movie* parentPointer = nullptr;
+	Movie* grandParentPointer = nullptr;
+	                                            //changing this to red
+	while ((newNode != root) && (newNode->color != RED) && (newNode->parent->color == RED)) {
 		parentPointer = newNode->parent;
-		grandParentPointer = newNode->parent->parent;
+		grandParentPointer = parentPointer->parent;
 
 		//if parent of pointer is left child of grandparent pointer
 		if (parentPointer == grandParentPointer->left) {
 			Movie* unclePointer = grandParentPointer->right;
 			//if the uncle pointer is also red only recoloring required
-			if (unclePointer != NULL && unclePointer->color == RED) {
+			if (unclePointer != nullptr && unclePointer->color == RED) {
 				grandParentPointer->color = RED;
 				parentPointer->color = BLACK;
 				unclePointer->color = BLACK;
@@ -289,12 +289,12 @@ void RBTree::fixColor(Movie* root, Movie* newNode) {
 		}
 		//if parent of newNode is the right child of grandparent pointer
 		else {
-			Movie* unclePointer = grandParentPointer->left;
+			Movie* unclePT = grandParentPointer->left;
 			//if the uncle of the newNode is also red only recoloring required
-			if ((unclePointer != NULL) && (unclePointer->color == RED)) {
+			if ((unclePT != nullptr) && (unclePT->color == RED)) {
 				grandParentPointer->color = RED;
 				parentPointer->color = BLACK;
-				unclePointer->color = BLACK;
+				unclePT->color = BLACK;
 				newNode = grandParentPointer;
 			}
 			else {
@@ -311,9 +311,10 @@ void RBTree::fixColor(Movie* root, Movie* newNode) {
 		}
 	}
 	root->color = BLACK;
+
 }
 Movie* RBTree::BSTInsert(Movie* root, Movie* newNode) {
-	if (root == NULL) { //if tree is empty return new node
+	if (root == nullptr) { //if tree is empty return new node
 		return newNode;
 	}
 	if (newNode->title[0] < root->title[0]) {
