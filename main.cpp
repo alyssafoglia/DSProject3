@@ -8,13 +8,11 @@
 #include <chrono>
 using namespace std;
 
-typedef chrono::high_resolution_clock Clock;
-typedef Clock::time_point ClockTime;
 bool isFloat(string str);
 bool isAlph(string str);
 enum Color { RED, BLACK };
 
-class Movie{
+class Movie {
 public:
 	Movie();
 	Movie(string _genres, float _popularity, string _revenue, int _runtime, string _title, string actor1, string actor2, string actor3, string actor4, string actor5, string director, string producer, string screenplay, string editor);
@@ -35,7 +33,7 @@ public:
 	void setScreenplay(string _screenplay);
 	void setEditor(string _editor);
 	//for tree
-	Movie *left, *right, *parent;
+	Movie* left, * right, * parent;
 	bool color;
 public:
 	// from Clean in order listed
@@ -216,15 +214,16 @@ struct RBTree {
 	Movie* root;
 	void rotateLeft(Movie* node1, Movie* node2);
 	void rotateRight(Movie* node1, Movie* node2);
+	void inorder(Movie* newNode);
 	void fixColor(Movie* node1, Movie* node2);
 	RBTree() {
 		root = NULL;
 	}
 	void insert(Movie* newNode);
-	Movie* BSTInsert(Movie* &root, Movie* &newNode);
-    void searchMovieTitle(string title, Movie* root);
-    void searchMovieActor(string actor, Movie* root,Movie* stableRoot);
-    void searchGenre(string genre, Movie* root, Movie* stableRoot);
+	Movie* BSTInsert(Movie* root, Movie* newNode);
+	void searchMovieTitle(string title, Movie* root);
+	void searchMovieActor(string actor, Movie* root, Movie* stableRoot);
+	void searchGenre(string genre, Movie* root, Movie* stableRoot);
 };
 
 Movie::Movie()
@@ -242,10 +241,10 @@ Movie::Movie()
 	producer_name = "";
 	screenplay_writer_name = "";
 	editor_name = "";
-    left = nullptr;
-    right= nullptr;
-    parent= nullptr;
-    color=RED;
+	left = nullptr;
+	right = nullptr;
+	parent = nullptr;
+	color = RED;
 }
 
 Movie::Movie(string _genres, float _popularity, string _revenue, int _runtime, string _title, string actor1, string actor2, string actor3, string actor4, string actor5, string director, string producer, string screenplay, string editor)
@@ -264,13 +263,13 @@ Movie::Movie(string _genres, float _popularity, string _revenue, int _runtime, s
 	producer_name = producer;
 	screenplay_writer_name = screenplay;
 	editor_name = editor;
-    left = nullptr;
-    right= nullptr;
-    parent= nullptr;
-    color=RED;
+	left = nullptr;
+	right = nullptr;
+	parent = nullptr;
+	color = RED;
 }
 
-void Movie::operator=(Movie* next) 
+void Movie::operator=(Movie* next)
 {
 	genres = next->genres;
 	popularity = next->popularity;
@@ -443,7 +442,7 @@ void RBTree::fixColor(Movie* root, Movie* newNode) {
 	root->color = BLACK;
 
 }
-Movie* RBTree::BSTInsert(Movie* &root, Movie* &newNode) {
+Movie* RBTree::BSTInsert(Movie* root, Movie* newNode) {
 	if (root == nullptr) { //if tree is empty return new node
 		return newNode;
 	}
@@ -451,7 +450,7 @@ Movie* RBTree::BSTInsert(Movie* &root, Movie* &newNode) {
 		root->left = BSTInsert(root->left, newNode);
 		root->left->parent = root;
 	}
-	else if (newNode->title[0] > root->title[0]) {
+	else{// if (newNode->title[0] > root->title[0]) {
 		root->right = BSTInsert(root->right, newNode);
 		root->right->parent = root;
 	}
@@ -459,14 +458,27 @@ Movie* RBTree::BSTInsert(Movie* &root, Movie* &newNode) {
 }
 void RBTree::insert(Movie* newNode) {
 	root = BSTInsert(root, newNode);
+	cout << endl << endl << endl;
+	//cout << newNode->title << endl;
 	fixColor(root, newNode);
+}
+void RBTree::inorder(Movie* newNode) {
+	if (newNode == nullptr)
+		return;
+	
+	inorder(newNode->left);
+	cout << newNode->title << ", ";
+	inorder(newNode->right);
 }
 void RBTree::searchMovieTitle(string title, Movie* root) {
 	if (root == nullptr) {
 		return;
 	}
+	//inorder(root);
 	//searchMovieTitle(title, root->left);
+	//cout << root->title << endl;
 	if (root->title == title) {
+		cout << "Found: " << root->title << endl;
 		cout << "Genres: " << root->genres << endl;
 		cout << "Popularity: " << root->popularity << endl;
 		cout << "Revenue: " << root->revenue << endl;
@@ -482,13 +494,14 @@ void RBTree::searchMovieTitle(string title, Movie* root) {
 		cout << "Screenplay by: " << root->screenplay_writer_name << endl;
 		cout << "Editor: " << root->editor_name << endl;
 	}
+	
 	if (title[0] < root->title[0]) {
 		searchMovieTitle(title, root->left);
 	}
 	else {
 		searchMovieTitle(title, root->right);
 	}
-
+	
 	/*
 	vector<Movie*> vecToPrint;
 	stack<Movie*> stack;
@@ -536,6 +549,7 @@ void RBTree::searchMovieActor(string actor, Movie* root, Movie* stableRoot) {
 	if (root == nullptr) {
 		return;
 	}
+	//cout << root->title << endl;
 	if (actor == root->actor1_name || actor == root->actor2_name || actor == root->actor3_name || actor == root->actor4_name || actor == root->actor5_name) {
 		/*cout << "Genres: " << root->genres << endl;
 		cout << "Popularity: " << root->popularity << endl;
@@ -577,7 +591,6 @@ void RBTree::searchMovieActor(string actor, Movie* root, Movie* stableRoot) {
 			curr=curr->right;
 		}
 	}
-
 	if (!vecToPrint.empty()) {
 		sort(vecToPrint.begin(), vecToPrint.end());
 		for (int i = 0; i < vecToPrint.size(); i++) {
@@ -696,37 +709,35 @@ int main()
 			cout << "Search by Movie (1), actor (2), or genre(3). Exit with -1 \n";
 			cin >> input;
 		}
-		switch (stoi(input)) {
-		case 1:
+		if (stoi(input) == 1) {
 			cout << "Insert Movie Title: ";
 			cin.ignore();
 			getline(cin, movieTitle);
 			// search
-			//ClockTime start = Clock::now();
+			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchMovieTitle(movieTitle, treePoint->root);
-			//ClockTime end = Clock::now();
-			//cout << chrono::duration_cast<chrono::microseconds>(start - end).count();
-			break;
-		case 2:
+			chrono::steady_clock::time_point end = chrono::steady_clock::now();
+			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count();
+		}
+		else if (stoi(input) == 2) {
 			cout << "Insert an actor: ";
 			cin.ignore();
 			getline(cin, movieActor);
 			// search
-			//ClockTime start2 = Clock::now();
+			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchMovieActor(movieActor, treePoint->root, treePoint->root);
-			//ClockTime end2 = Clock::now();
-			//cout << chrono::duration_cast<chrono::microseconds>(start2 - end2).count();
-			break;
-		case 3:
+			chrono::steady_clock::time_point end = chrono::steady_clock::now();
+			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count();
+		}
+		else if (stoi(input) == 3) {
 			cout << "Insert a genre: ";
 			cin.ignore();
 			getline(cin, movieGenre);
 			// search
-			//ClockTime start3 = Clock::now();
+			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchGenre(movieGenre, treePoint->root, treePoint->root);
-			//ClockTime end3 = Clock::now();
-			//cout << chrono::duration_cast<chrono::microseconds>(start3 - end3).count();
-			break;
+			chrono::steady_clock::time_point end = chrono::steady_clock::now();
+			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count();
 		}
 	}
 }
@@ -744,7 +755,7 @@ void readCSV(RBTree* tree, HashTable hash)
 
 	if (inClean.is_open() && inRaw.is_open()) {
 		// can lower conditional when testing so the entire file doesn't need to be run every time. Takes appprox 2mins 10s without adding to data structure
-		while (temp < 2000) { //328842 is max, error after 198152-> correlates to id: 314304
+		while (temp < 100) { //328842 is max, error after 198152-> correlates to id: 314304
 			Movie* node = new Movie();
 			Movie movie = Movie();
 
@@ -868,6 +879,7 @@ void readCSV(RBTree* tree, HashTable hash)
 				movie.setScreenplay(_screenplay_writer_name);
 				movie.setEditor(_editor_name);
 
+				//cout << temp << endl;
 				//hash.Insert(movie);
 				//node.PrintMovie();
 				// Add to tree.
