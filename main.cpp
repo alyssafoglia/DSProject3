@@ -307,6 +307,7 @@ struct RBTree {
     void searchMovieTitle(string title, Movie* root);
     void searchMovieActor(string actor, Movie* root, Movie* stableRoot);
     void searchGenre(string genre, Movie* root, Movie* stableRoot);
+    void levelOrderTitleSearch(string title, Movie* root);
 };
 
 Movie::Movie()
@@ -628,6 +629,45 @@ void RBTree::searchMovieTitle(string title, Movie* root) {
 	}
 	 */
 }
+void RBTree::levelOrderTitleSearch(string title, Movie *root) {
+    if(root==nullptr){
+        return;
+    }
+    cout << "THIS IS TITLE "<<title <<endl;
+    queue<Movie*> q;
+    q.push(root);
+    while(q.empty()==false){
+        int nodeCount=q.size();
+        while(nodeCount > 0){
+            Movie* node=q.front();
+            if (node->title == title) {
+                cout << "Found: " << node->title << endl;
+                cout << "Genres: " << node->genres << endl;
+                cout << "Popularity: " << node->popularity << endl;
+                cout << "Revenue: " << node->revenue << endl;
+                cout << "Runtime: " << node->runtime << endl;
+                cout << "Title: " << node->title << endl;
+                cout << "Actor 1: " << node->actor1_name << endl;
+                cout << "Actor 2: " << node->actor2_name << endl;
+                cout << "Actor 3: " << node->actor3_name << endl;
+                cout << "Actor 4: " << node->actor4_name << endl;
+                cout << "Actor 5: " << node->actor5_name << endl;
+                cout << "Director: " << node->director_name << endl;
+                cout << "Producer: " << node->producer_name << endl;
+                cout << "Screenplay by: " << node->screenplay_writer_name << endl;
+                cout << "Editor: " << node->editor_name << endl;
+            }
+            q.pop();
+            if(node->left!=nullptr){
+                q.push(node->left);
+            }
+            if(node->right!=nullptr){
+                q.push(node->right);
+            }
+            nodeCount--;
+        }
+    }
+}
 void RBTree::searchMovieActor(string actor, Movie* root, Movie* stableRoot) {
 	if (root == nullptr) {
 		return;
@@ -800,7 +840,13 @@ int main()
 			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchMovieTitle(movieTitle, treePoint->root);
 			chrono::steady_clock::time_point end = chrono::steady_clock::now();
-			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count();
+			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count() <<endl;
+
+			cout<< endl<< "//// LEVEL ORDER ////" << movieTitle<<endl;
+            chrono::steady_clock::time_point start2 = chrono::steady_clock::now();
+            treePoint->levelOrderTitleSearch(movieTitle, treePoint->root);
+            chrono::steady_clock::time_point end2 = chrono::steady_clock::now();
+            cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end2 - start2).count()<<endl;
 		}
 		else if (stoi(input) == 2) {
 			cout << "Insert an actor: ";
@@ -810,7 +856,7 @@ int main()
 			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchMovieActor(movieActor, treePoint->root, treePoint->root);
 			chrono::steady_clock::time_point end = chrono::steady_clock::now();
-			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count();
+			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count()<<endl;
 		}
 		else if (stoi(input) == 3) {
 			cout << "Insert a genre: ";
@@ -820,7 +866,7 @@ int main()
 			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchGenre(movieGenre, treePoint->root, treePoint->root);
 			chrono::steady_clock::time_point end = chrono::steady_clock::now();
-			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count();
+			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count()<<endl;
 		}
 	}
 }
