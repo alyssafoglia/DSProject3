@@ -156,143 +156,6 @@ Movie& Movie::operator=(Movie&& next)
     return *this;
 }
 
-class HashTable {
-public:
-	//the number of bins in the table
-	unsigned int capacity;
-	//this is the array used for the hash table. The vector component is necessary for chaining
-	vector<pair<string, Movie>>* arr = new vector<pair<string, Movie>>[capacity];
-	//the number of movies added to the table
-	unsigned int movieCount;
-
-	//constructor
-	HashTable(unsigned int capacity) {
-		this->capacity = capacity;
-	}
-
-	//converts key to an index
-	unsigned int Hash(string key) {
-		unsigned int index = 0;
-
-		for (int i = 0; i < key.size(); i++) {
-			index += key[i];
-		}
-
-		index = index % capacity;
-		return index;
-	}
-
-	//inserts a movie into the hash table
-	void Insert(Movie movie) {
-		pair<string, Movie> pair;
-		pair.first = movie.title;
-		pair.second = Movie(movie);
-		arr[Hash(pair.first)].push_back(pair);
-
-		//increment the movie count
-		movieCount++;
-	}
-
-	//deletes a movie
-	void Delete(Movie movie) {
-		int index = Hash(movie.title);
-		for (int i = 0; i < arr[index].size(); i++) {
-			if (arr[index][i].first == movie.title) {
-				arr[index].erase(arr[index].begin() + i);
-			}
-		}
-
-		//decrement the movie count
-		movieCount--;
-	}
-
-	//used to print out a movie's info
-	void Print(Movie movie) {
-		cout << "Genres: " << movie.genres << endl;
-		cout << "Popularity: " << movie.popularity << endl;
-		cout << "Revenue: " << movie.revenue << endl;
-		cout << "Runtime: " << movie.runtime << endl;
-		cout << "Title: " << movie.title << endl;
-		cout << "Actor 1: " << movie.actor1_name << endl;
-		cout << "Actor 2: " << movie.actor2_name << endl;
-		cout << "Actor 3: " << movie.actor3_name << endl;
-		cout << "Actor 4: " << movie.actor4_name << endl;
-		cout << "Actor 5: " << movie.actor5_name << endl;
-		cout << "Director: " << movie.director_name << endl;
-		cout << "Producer: " << movie.producer_name << endl;
-		cout << "Screenplay by: " << movie.screenplay_writer_name << endl;
-		cout << "Editor: " << movie.editor_name << endl;
-	}
-
-    //this method is needed to search for a particular movie
-    void SearchTitle(string title) {
-        int index = Hash(title);
-        bool printed = false;
-
-        for (int i = 0; i < arr[index].size(); i++) {
-            if (arr[index][i].second.title == title) {
-                Print(arr[index][i].second);
-                printed = true;
-            }
-        }
-
-        if (!printed) {
-            cout << "There are no documented movies with that genre." << endl;
-
-        }
-    }
-
-    //this method is needed to search for a particular movie by genre
-    void searchGenre(string genres) {
-        bool printed = false;
-        for (int i = 0; i < capacity; i++) {
-            for (int j = 0; j < arr[i].size(); j++) {
-                if (arr[i][j].second.genres == genres) {
-                    Print(arr[i][j].second);
-                    printed = true;
-                }
-            }
-
-        }
-        if (!printed) {
-            cout << "There are no documented movies with that genre." << endl;
-        }
-
-    }
-
-    //this method is needed to search for a movie by actor
-    void searchActor(string actor) {
-        bool printed = false;
-
-        for (int i = 0; i < capacity; i++) {
-            for (int j = 0; j < arr[i].size(); j++) {
-                if (arr[i][j].second.actor1_name == actor ||
-                    arr[i][j].second.actor2_name == actor ||
-                    arr[i][j].second.actor3_name == actor ||
-                    arr[i][j].second.actor4_name == actor ||
-                    arr[i][j].second.actor5_name == actor) {
-                    Print(arr[i][j].second);
-                    printed = true;
-                }
-            }
-        }
-
-        if (!printed) {
-            cout << "There are no documented movies with that actor." << endl;
-        }
-    }
-
-    //used for testing
-    void PrintAll() {
-        for (int i = 0; i < capacity; i++) {
-            for (int j = 0; j < arr[i].size(); j++) {
-                Print(arr[i][j].second);
-            }
-        }
-    }
-
-};
-
 struct RBTree {
     Movie* root;
     void rotateLeft(Movie* node1, Movie* node2);
@@ -305,10 +168,9 @@ struct RBTree {
     void insert(Movie* newNode);
     Movie* BSTInsert(Movie* root, Movie* newNode);
     void searchMovieTitle(string title, Movie* root);
-    void searchMovieActor(string actor,string genre, Movie* root, Movie* stableRoot);
-    void searchGenre(string genre, Movie* root, Movie* stableRoot);
+    void searchMovieActorGenre(string actor,string genre, Movie* root, Movie* stableRoot);
     void levelOrderTitleSearch(string title, Movie* root);
-    void levelOrderActorSearch(string actor,string genre, Movie* root, Movie* stableRoot);
+    void levelOrderActorGenreSearch(string actor,string genre, Movie* root, Movie* stableRoot);
 };
 
 Movie::Movie()
@@ -474,7 +336,7 @@ void RBTree::rotateRight(Movie* root, Movie* newNode) {
 void RBTree::fixColor(Movie* root, Movie* newNode) {
 	Movie* parentPointer = nullptr;
 	Movie* grandParentPointer = nullptr;
-	//changing this to red
+
 	while ((newNode != root) && (newNode->color != RED) && (newNode->parent->color == RED)) {
 		parentPointer = newNode->parent;
 		grandParentPointer = parentPointer->parent;
@@ -535,7 +397,7 @@ Movie* RBTree::BSTInsert(Movie* root, Movie* newNode) {
 		root->left = BSTInsert(root->left, newNode);
 		root->left->parent = root;
 	}
-	else{// if (newNode->title[0] > root->title[0]) {
+	else{
 		root->right = BSTInsert(root->right, newNode);
 		root->right->parent = root;
 	}
@@ -543,8 +405,6 @@ Movie* RBTree::BSTInsert(Movie* root, Movie* newNode) {
 }
 void RBTree::insert(Movie* newNode) {
 	root = BSTInsert(root, newNode);
-	cout << endl << endl << endl;
-	//cout << newNode->title << endl;
 	fixColor(root, newNode);
 }
 void RBTree::inorder(Movie* newNode) {
@@ -559,9 +419,6 @@ void RBTree::searchMovieTitle(string title, Movie* root) {
 	if (root == nullptr) {
 		return;
 	}
-	//inorder(root);
-	//searchMovieTitle(title, root->left);
-	//cout << root->title << endl;
 	if (root->title == title) {
 		cout << "Found: " << root->title << endl;
 		cout << "Genres: " << root->genres << endl;
@@ -586,49 +443,7 @@ void RBTree::searchMovieTitle(string title, Movie* root) {
 	else {
 		searchMovieTitle(title, root->right);
 	}
-	
-	/*
-	vector<Movie*> vecToPrint;
-	stack<Movie*> stack;
-	Movie* curr=root;
-	while(!stack.empty() || curr!=nullptr){
-		if(curr!= nullptr){
-			stack.push(curr);
-			curr=curr->left;
-		}
-		else{
-			curr=stack.top();
-			stack.pop();
-			if(title==curr->title) {
-				vecToPrint.push_back(curr);
-			}
-			curr=curr->right;
-		}
-	}
-	if (!vecToPrint.empty()) {
-		sort(vecToPrint.begin(), vecToPrint.end());
-		for (int i = 0; i < vecToPrint.size(); i++) {
-			//vecToPrint[i]->PrintMovie();
-			cout << "Genres: " << vecToPrint[i]->genres << endl;
-			cout << "Popularity: " << vecToPrint[i]->popularity << endl;
-			cout << "Revenue: " << vecToPrint[i]->revenue << endl;
-			cout << "Runtime: " << vecToPrint[i]->runtime << endl;
-			cout << "Title: " << vecToPrint[i]->title << endl;
-			cout << "Actor 1: " << vecToPrint[i]->actor1_name << endl;
-			cout << "Actor 2: " << vecToPrint[i]->actor2_name << endl;
-			cout << "Actor 3: " << vecToPrint[i]->actor3_name << endl;
-			cout << "Actor 4: " << vecToPrint[i]->actor4_name << endl;
-			cout << "Actor 5: " << vecToPrint[i]->actor5_name << endl;
-			cout << "Director: " << vecToPrint[i]->director_name << endl;
-			cout << "Producer: " << vecToPrint[i]->producer_name << endl;
-			cout << "Screenplay by: " << vecToPrint[i]->screenplay_writer_name << endl;
-			cout << "Editor: " << vecToPrint[i]->editor_name << endl;
-		}
-	}
-	else {
-		cout << "There are no documented movies with that title." << endl;
-	}
-	 */
+
 }
 void RBTree::levelOrderTitleSearch(string title, Movie *root) {
     if(root==nullptr){
@@ -669,76 +484,18 @@ void RBTree::levelOrderTitleSearch(string title, Movie *root) {
         }
     }
 }
-void RBTree::searchMovieActor(string actor, string genre, Movie* root, Movie* stableRoot) {
+void RBTree::searchMovieActorGenre(string actor, string genre, Movie* root, Movie* stableRoot) {
 	if (root == nullptr) {
 		return;
 	}
-	//cout << root->title << endl;
 
 	if (root->genres.find(genre) != string::npos && (actor == root->actor1_name || actor == root->actor2_name || actor == root->actor3_name || actor == root->actor4_name || actor == root->actor5_name)) {
-		/*cout << "Genres: " << root->genres << endl;
-		cout << "Popularity: " << root->popularity << endl;
-		cout << "Revenue: " << root->revenue << endl;
-		cout << "Runtime: " << root->runtime << endl;*/
 		cout << "Title: " << root->title << endl;
-		/*cout << "Actor 1: " << root->actor1_name << endl;
-		cout << "Actor 2: " << root->actor2_name << endl;
-		cout << "Actor 3: " << root->actor3_name << endl;
-		cout << "Actor 4: " << root->actor4_name << endl;
-		cout << "Actor 5: " << root->actor5_name << endl;
-		cout << "Director: " << root->director_name << endl;
-		cout << "Producer: " << root->producer_name << endl;
-		cout << "Screenplay by: " << root->screenplay_writer_name << endl;
-		cout << "Editor: " << root->editor_name << endl;*/
 	}
-		searchMovieActor(actor, genre, root->left, root);
-		searchMovieActor(actor, genre, root->right, root);
-
-
-	/*
-	vector<Movie*> vecToPrint;
-	stack<Movie*> stack;
-	Movie* curr=root;
-	while(!stack.empty() || curr!=nullptr){
-		if(curr!=nullptr){
-			stack.push(curr);
-			curr=curr->left;
-		}
-		else{
-			curr=stack.top();
-			stack.pop();
-			if (actor == root->actor1_name || actor == root->actor2_name || actor == root->actor3_name || actor == root->actor4_name || actor == root->actor5_name) {
-				vecToPrint.push_back(curr);
-			}
-			curr=curr->right;
-		}
-	}
-	if (!vecToPrint.empty()) {
-		sort(vecToPrint.begin(), vecToPrint.end());
-		for (int i = 0; i < vecToPrint.size(); i++) {
-			//vecToPrint[i]->PrintMovie();
-			cout << "Genres: " << vecToPrint[i]->genres << endl;
-			cout << "Popularity: " << vecToPrint[i]->popularity << endl;
-			cout << "Revenue: " << vecToPrint[i]->revenue << endl;
-			cout << "Runtime: " << vecToPrint[i]->runtime << endl;
-			cout << "Title: " << vecToPrint[i]->title << endl;
-			cout << "Actor 1: " << vecToPrint[i]->actor1_name << endl;
-			cout << "Actor 2: " << vecToPrint[i]->actor2_name << endl;
-			cout << "Actor 3: " << vecToPrint[i]->actor3_name << endl;
-			cout << "Actor 4: " << vecToPrint[i]->actor4_name << endl;
-			cout << "Actor 5: " << vecToPrint[i]->actor5_name << endl;
-			cout << "Director: " << vecToPrint[i]->director_name << endl;
-			cout << "Producer: " << vecToPrint[i]->producer_name << endl;
-			cout << "Screenplay by: " << vecToPrint[i]->screenplay_writer_name << endl;
-			cout << "Editor: " << vecToPrint[i]->editor_name << endl;
-		}
-	}
-	else {
-		cout << "There are no documented movies with that actor." << endl;
-	}
-	 */
+		searchMovieActorGenre(actor, genre, root->left, root);
+		searchMovieActorGenre(actor, genre, root->right, root);
 }
-void RBTree::levelOrderActorSearch(string actor, string genre, Movie *root, Movie *stableRoot) {
+void RBTree::levelOrderActorGenreSearch(string actor, string genre, Movie *root, Movie *stableRoot) {
     if(root==nullptr){
         return;
     }
@@ -764,84 +521,15 @@ void RBTree::levelOrderActorSearch(string actor, string genre, Movie *root, Movi
         }
     }
 }
-void RBTree::searchGenre(string genre, Movie* root, Movie* stableRoot) {
-	if (root == nullptr) {
-		return;
-	}
-	if (root->genres.find(genre) != string::npos) {
-		/*cout << "Genres: " << root->genres << endl;
-		cout << "Popularity: " << root->popularity << endl;
-		cout << "Revenue: " << root->revenue << endl;
-		cout << "Runtime: " << root->runtime << endl;*/
-		cout << "Title: " << root->title << endl;
-		/*cout << "Actor 1: " << root->actor1_name << endl;
-		cout << "Actor 2: " << root->actor2_name << endl;
-		cout << "Actor 3: " << root->actor3_name << endl;
-		cout << "Actor 4: " << root->actor4_name << endl;
-		cout << "Actor 5: " << root->actor5_name << endl;
-		cout << "Director: " << root->director_name << endl;
-		cout << "Producer: " << root->producer_name << endl;
-		cout << "Screenplay by: " << root->screenplay_writer_name << endl;
-		cout << "Editor: " << root->editor_name << endl;*/
-	}
-
-		searchGenre(genre, root->left, root);
-		searchGenre(genre, root->right, root);
 
 
-	/*
-	vector<Movie*> vecToPrint;
-	stack<Movie*> stack;
-	Movie* curr=root;
-	while(!stack.empty() || curr!=nullptr){
-		if(curr!=nullptr){
-			stack.push(curr);
-			curr=curr->left;
-		}
-		else{
-			curr=stack.top();
-			stack.pop();
-			if (genre == root->genres) {
-				vecToPrint.push_back(root);
-			}
-			curr=curr->right;
-		}
-	}
-	if (!vecToPrint.empty()) {
-		sort(vecToPrint.begin(), vecToPrint.end());
-		for (int i = 0; i < vecToPrint.size(); i++) {
-			//vecToPrint[i]->PrintMovie();
-			cout << "Genres: " << vecToPrint[i]->genres << endl;
-			cout << "Popularity: " << vecToPrint[i]->popularity << endl;
-			cout << "Revenue: " << vecToPrint[i]->revenue << endl;
-			cout << "Runtime: " << vecToPrint[i]->runtime << endl;
-			cout << "Title: " << vecToPrint[i]->title << endl;
-			cout << "Actor 1: " << vecToPrint[i]->actor1_name << endl;
-			cout << "Actor 2: " << vecToPrint[i]->actor2_name << endl;
-			cout << "Actor 3: " << vecToPrint[i]->actor3_name << endl;
-			cout << "Actor 4: " << vecToPrint[i]->actor4_name << endl;
-			cout << "Actor 5: " << vecToPrint[i]->actor5_name << endl;
-			cout << "Director: " << vecToPrint[i]->director_name << endl;
-			cout << "Producer: " << vecToPrint[i]->producer_name << endl;
-			cout << "Screenplay by: " << vecToPrint[i]->screenplay_writer_name << endl;
-			cout << "Editor: " << vecToPrint[i]->editor_name << endl;
-		}
-	}
-	else {
-		cout << "There are no documented movies with that genre." << endl;
-	}
-	 */
-}
-
-void readCSV(RBTree* tree, HashTable hash);
+void readCSV(RBTree* tree);
 
 int main()
 {
-	HashTable hash(300000);
 	RBTree tree;
 	RBTree* treePoint = &tree;
-	readCSV(treePoint, hash);
-	treePoint->root->PrintMovie();
+	readCSV(treePoint);
 
 	string input = "";
 	while (input != "-1") {
@@ -851,7 +539,7 @@ int main()
 		Movie userInput;
 		input = "-2";
 		while (input != "-1" && input != "1" && input != "2" && input != "3") {
-			cout << "Search by Movie (1), actor (2), or genre(3). Exit with -1 \n";
+			cout << "Search by Movie (1), actor and genre (2). Exit with -1 \n";
 			cin >> input;
 		}
 		if (stoi(input) == 1) {
@@ -859,12 +547,13 @@ int main()
 			cin.ignore();
 			getline(cin, movieTitle);
 			// search
+            cout<< endl<< "DEPTH FIRST" <<endl<<endl;
 			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchMovieTitle(movieTitle, treePoint->root);
 			chrono::steady_clock::time_point end = chrono::steady_clock::now();
 			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count() <<endl;
 
-			cout<< endl<< "//// LEVEL ORDER ////" << movieTitle<<endl;
+			cout<< endl<< "LEVEL ORDER/BREADTH FIRST" <<endl<<endl;
             chrono::steady_clock::time_point start2 = chrono::steady_clock::now();
             treePoint->levelOrderTitleSearch(movieTitle, treePoint->root);
             chrono::steady_clock::time_point end2 = chrono::steady_clock::now();
@@ -878,31 +567,21 @@ int main()
             cin.ignore();
             getline(cin, movieGenre);
             // search
+            cout<< endl<< "DEPTH FIRST" <<endl<<endl;
             chrono::steady_clock::time_point start = chrono::steady_clock::now();
-            treePoint->searchMovieActor(movieActor, movieGenre, treePoint->root, treePoint->root);
+            treePoint->searchMovieActorGenre(movieActor, movieGenre, treePoint->root, treePoint->root);
             chrono::steady_clock::time_point end = chrono::steady_clock::now();
             cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << endl << endl;
 
-            cout<< endl<< "//// LEVEL ORDER ////" << movieTitle<<endl;
+            cout<< endl<< "LEVEL ORDER/BREADTH FIRST" <<endl<<endl;
             chrono::steady_clock::time_point start2 = chrono::steady_clock::now();
-            treePoint->levelOrderActorSearch(movieActor,movieGenre, treePoint->root, treePoint->root);
+            treePoint->levelOrderActorGenreSearch(movieActor,movieGenre, treePoint->root, treePoint->root);
             chrono::steady_clock::time_point end2 = chrono::steady_clock::now();
             cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end2 - start2).count()<<endl;
-
-		}
-		else if (stoi(input) == 3) {
-			cout << "Insert a genre: ";
-			cin.ignore();
-			getline(cin, movieGenre);
-			// search
-			chrono::steady_clock::time_point start = chrono::steady_clock::now();
-			treePoint->searchGenre(movieGenre, treePoint->root, treePoint->root);
-			chrono::steady_clock::time_point end = chrono::steady_clock::now();
-			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count()<<endl;
 		}
 	}
 }
-void readCSV(RBTree* tree, HashTable hash)
+void readCSV(RBTree* tree)
 {
 	fstream inClean("AllMoviesDetailsCleaned.csv");
 	fstream inRaw("AllMoviesCastingRaw.csv");
@@ -916,9 +595,8 @@ void readCSV(RBTree* tree, HashTable hash)
 
 	if (inClean.is_open() && inRaw.is_open()) {
 		// can lower conditional when testing so the entire file doesn't need to be run every time. Takes appprox 2mins 10s without adding to data structure
-		while (temp < 100) { //328842 is max, error after 198152-> correlates to id: 314304
+		while (temp < 100000) { //328842 is max
 			Movie* node = new Movie();
-			Movie movie = Movie();
 
 			string _idC = "";
 			string _genres = "";
@@ -1005,8 +683,6 @@ void readCSV(RBTree* tree, HashTable hash)
 			if (_idC != _idR) // should not occur. If IDs of the movies do not match then the data from both csv files will also not match
 				cout << "Clean: " << _idC << "Raw: " << _idR << endl;
 
-			// = Movie(_genres, stof(_popularity), _revenue, stoi(_runtime), _title, _actor1_name, _actor2_name, _actor3_name, _actor4_name, _actor5_name, _director_name, _producer_name, _screenplay_writer_name, _editor_name);
-
 
 			if (isAlph(_title) && temp != 198152 && _genres != "" && _actor1_name != "" && _title != "") { // bad data at 198152
 				node->setGenres(_genres);
@@ -1024,42 +700,13 @@ void readCSV(RBTree* tree, HashTable hash)
 				node->setScreenplay(_screenplay_writer_name);
 				node->setEditor(_editor_name);
 
-
-				movie.setGenres(_genres);
-				movie.setPop(_popularity);
-				movie.setRevenue(_revenue);
-				movie.setRuntime(_runtime);
-				movie.setTitle(_title);
-				movie.setActor1(_actor1_name);
-				movie.setActor2(_actor2_name);
-				movie.setActor3(_actor3_name);
-				movie.setActor4(_actor4_name);
-				movie.setActor5(_actor5_name);
-				movie.setDirector(_director_name);
-				movie.setProducer(_producer_name);
-				movie.setScreenplay(_screenplay_writer_name);
-				movie.setEditor(_editor_name);
-
-				//cout << temp << endl;
-				//hash.Insert(movie);
-				//node.PrintMovie();
 				// Add to tree.
-
 				tree->insert(node);
-
-				//node->PrintMovie();
-				//if (_title == "Tron")
-					//node->PrintMovie();
 				count++;
-				//cout << count << endl;
-			}
-			//else
-				//cout << "not letter " << _title << " " << _idC << endl;
 
+			}
 		}
 	}
-	//tree->root->PrintMovie();
-	cout << endl;
 }
 
 bool isFloat(string str)
