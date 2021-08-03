@@ -17,7 +17,7 @@ public:
 	Movie();
 	Movie(string _genres, float _popularity, string _revenue, int _runtime, string _title, string actor1, string actor2, string actor3, string actor4, string actor5, string director, string producer, string screenplay, string editor);
 	void operator=(Movie* next);
-	Movie(const Movie& next);
+	Movie(const Movie &next);
 	Movie& operator=(Movie&& next);
 	Movie& operator=(Movie& next);
 	void PrintMovie();
@@ -86,74 +86,74 @@ public:
 };
 
 Movie::Movie(const Movie& next) {
-	genres = next.genres;
-	popularity = next.popularity;
-	revenue = next.revenue;
-	runtime = next.runtime;
-	title = next.title;
-	actor1_name = next.actor1_name;
-	actor2_name = next.actor2_name;
-	actor3_name = next.actor3_name;
-	actor4_name = next.actor4_name;
-	actor5_name = next.actor5_name;
-	director_name = next.director_name;
-	producer_name = next.producer_name;
-	screenplay_writer_name = next.screenplay_writer_name;
-	editor_name = next.editor_name;
+    genres = next.genres;
+    popularity = next.popularity;
+    revenue = next.revenue;
+    runtime = next.runtime;
+    title = next.title;
+    actor1_name = next.actor1_name;
+    actor2_name = next.actor2_name;
+    actor3_name = next.actor3_name;
+    actor4_name = next.actor4_name;
+    actor5_name = next.actor5_name;
+    director_name = next.director_name;
+    producer_name = next.producer_name;
+    screenplay_writer_name = next.screenplay_writer_name;
+    editor_name = next.editor_name;
 }
 
 Movie& Movie::operator=(Movie& next)
 {
-	genres = next.genres;
-	popularity = next.popularity;
-	revenue = next.revenue;
-	runtime = next.runtime;
-	title = next.title;
-	actor1_name = next.actor1_name;
-	actor2_name = next.actor2_name;
-	actor3_name = next.actor3_name;
-	actor4_name = next.actor4_name;
-	actor5_name = next.actor5_name;
-	director_name = next.director_name;
-	producer_name = next.producer_name;
-	screenplay_writer_name = next.screenplay_writer_name;
-	editor_name = next.editor_name;
-	return *this;
+    genres = next.genres;
+    popularity = next.popularity;
+    revenue = next.revenue;
+    runtime = next.runtime;
+    title = next.title;
+    actor1_name = next.actor1_name;
+    actor2_name = next.actor2_name;
+    actor3_name = next.actor3_name;
+    actor4_name = next.actor4_name;
+    actor5_name = next.actor5_name;
+    director_name = next.director_name;
+    producer_name = next.producer_name;
+    screenplay_writer_name = next.screenplay_writer_name;
+    editor_name = next.editor_name;
+    return *this;
 }
 
 Movie& Movie::operator=(Movie&& next)
 {
-	genres = next.genres;
-	popularity = next.popularity;
-	revenue = next.revenue;
-	runtime = next.runtime;
-	title = next.title;
-	actor1_name = next.actor1_name;
-	actor2_name = next.actor2_name;
-	actor3_name = next.actor3_name;
-	actor4_name = next.actor4_name;
-	actor5_name = next.actor5_name;
-	director_name = next.director_name;
-	producer_name = next.producer_name;
-	screenplay_writer_name = next.screenplay_writer_name;
-	editor_name = next.editor_name;
+    genres = next.genres;
+    popularity = next.popularity;
+    revenue = next.revenue;
+    runtime = next.runtime;
+    title = next.title;
+    actor1_name = next.actor1_name;
+    actor2_name = next.actor2_name;
+    actor3_name = next.actor3_name;
+    actor4_name = next.actor4_name;
+    actor5_name = next.actor5_name;
+    director_name = next.director_name;
+    producer_name = next.producer_name;
+    screenplay_writer_name = next.screenplay_writer_name;
+    editor_name = next.editor_name;
 
-	next.genres = "";
-	next.popularity = 1.0;
-	next.revenue = "";
-	next.runtime = 1;
-	next.title = "";
-	next.actor1_name = "";
-	next.actor2_name = "";
-	next.actor3_name = "";
-	next.actor4_name = "";
-	next.actor5_name = "";
-	next.director_name = "";
-	next.producer_name = "";
-	next.screenplay_writer_name = "";
-	next.editor_name = "";
+    next.genres = "";
+    next.popularity = 1.0;
+    next.revenue = "";
+    next. runtime = 1;
+    next.title = "";
+    next.actor1_name = "";
+    next.actor2_name = "";
+    next.actor3_name = "";
+    next.actor4_name = "";
+    next.actor5_name = "";
+    next.director_name = "";
+    next.producer_name = "";
+    next.screenplay_writer_name = "";
+    next.editor_name = "";
 
-	return *this;
+    return *this;
 }
 
 class HashTable {
@@ -224,151 +224,152 @@ public:
 		cout << "Editor: " << movie.editor_name << endl;
 	}
 
-	//this method is needed to search for a particular movie
-	void SearchTitle(string title) {
-		int index = Hash(title);
-		bool printed = false;
+    //this method is needed to search for a particular movie
+    void SearchTitle(string title) {
+        int index = Hash(title);
+        bool printed = false;
 
-		for (int i = 0; i < arr[index].size(); i++) {
-			if (arr[index][i].second.title == title) {
-				Print(arr[index][i].second);
-				printed = true;
-			}
-		}
+        for (int i = 0; i < arr[index].size(); i++) {
+            if (arr[index][i].second.title == title) {
+                Print(arr[index][i].second);
+                printed = true;
+            }
+        }
 
-		if (!printed) {
-			cout << "There are no documented movies with that genre." << endl;
+        if (!printed) {
+            cout << "There are no documented movies with that genre." << endl;
 
-		}
-	}
+        }
+    }
 
-	//this method is needed to search for a particular movie by genre
-	void searchGenre(string genres) {
-		bool printed = false;
-		for (int i = 0; i < capacity; i++) {
-			for (int j = 0; j < arr[i].size(); j++) {
-				if (arr[i][j].second.genres == genres) {
-					Print(arr[i][j].second);
-					printed = true;
-				}
-			}
+    //this method is needed to search for a particular movie by genre
+    void searchGenre(string genres) {
+        bool printed = false;
+        for (int i = 0; i < capacity; i++) {
+            for (int j = 0; j < arr[i].size(); j++) {
+                if (arr[i][j].second.genres == genres) {
+                    Print(arr[i][j].second);
+                    printed = true;
+                }
+            }
 
-		}
-		if (!printed) {
-			cout << "There are no documented movies with that genre." << endl;
-		}
+        }
+        if (!printed) {
+            cout << "There are no documented movies with that genre." << endl;
+        }
 
-	}
+    }
 
-	//this method is needed to search for a movie by actor
-	void searchActor(string actor) {
-		bool printed = false;
+    //this method is needed to search for a movie by actor
+    void searchActor(string actor) {
+        bool printed = false;
 
-		for (int i = 0; i < capacity; i++) {
-			for (int j = 0; j < arr[i].size(); j++) {
-				if (arr[i][j].second.actor1_name == actor ||
-					arr[i][j].second.actor2_name == actor ||
-					arr[i][j].second.actor3_name == actor ||
-					arr[i][j].second.actor4_name == actor ||
-					arr[i][j].second.actor5_name == actor) {
-					Print(arr[i][j].second);
-					printed = true;
-				}
-			}
-		}
+        for (int i = 0; i < capacity; i++) {
+            for (int j = 0; j < arr[i].size(); j++) {
+                if (arr[i][j].second.actor1_name == actor ||
+                    arr[i][j].second.actor2_name == actor ||
+                    arr[i][j].second.actor3_name == actor ||
+                    arr[i][j].second.actor4_name == actor ||
+                    arr[i][j].second.actor5_name == actor) {
+                    Print(arr[i][j].second);
+                    printed = true;
+                }
+            }
+        }
 
-		if (!printed) {
-			cout << "There are no documented movies with that actor." << endl;
-		}
-	}
+        if (!printed) {
+            cout << "There are no documented movies with that actor." << endl;
+        }
+    }
 
-	//used for testing
-	void PrintAll() {
-		for (int i = 0; i < capacity; i++) {
-			for (int j = 0; j < arr[i].size(); j++) {
-				Print(arr[i][j].second);
-			}
-		}
-	}
+    //used for testing
+    void PrintAll() {
+        for (int i = 0; i < capacity; i++) {
+            for (int j = 0; j < arr[i].size(); j++) {
+                Print(arr[i][j].second);
+            }
+        }
+    }
 
 };
 
 struct RBTree {
-	Movie* root;
-	void rotateLeft(Movie* node1, Movie* node2);
-	void rotateRight(Movie* node1, Movie* node2);
-	void inorder(Movie* newNode);
-	void fixColor(Movie* node1, Movie* node2);
-	RBTree() {
-		root = NULL;
-	}
-	void insert(Movie* newNode);
-	Movie* BSTInsert(Movie* root, Movie* newNode);
-	void searchMovieTitle(string title, Movie* root);
-	void searchMovieActor(string actor, string genre, Movie* root, Movie* stableRoot);
-	void searchGenre(string genre, Movie* root, Movie* stableRoot);
-	void levelOrderTitleSearch(string title, Movie* root);
+    Movie* root;
+    void rotateLeft(Movie* node1, Movie* node2);
+    void rotateRight(Movie* node1, Movie* node2);
+    void inorder(Movie* newNode);
+    void fixColor(Movie* node1, Movie* node2);
+    RBTree() {
+        root = NULL;
+    }
+    void insert(Movie* newNode);
+    Movie* BSTInsert(Movie* root, Movie* newNode);
+    void searchMovieTitle(string title, Movie* root);
+    void searchMovieActor(string actor,string genre, Movie* root, Movie* stableRoot);
+    void searchGenre(string genre, Movie* root, Movie* stableRoot);
+    void levelOrderTitleSearch(string title, Movie* root);
+    void levelOrderActorSearch(string actor,string genre, Movie* root, Movie* stableRoot);
 };
 
 Movie::Movie()
 {
-	genres = "";
-	popularity = 0;
-	revenue = "";
-	runtime = 0;
-	actor1_name = "";
-	actor2_name = "";
-	actor3_name = "";
-	actor4_name = "";
-	actor5_name = "";
-	director_name = "";
-	producer_name = "";
-	screenplay_writer_name = "";
-	editor_name = "";
-	left = nullptr;
-	right = nullptr;
-	parent = nullptr;
-	color = RED;
+    genres = "";
+    popularity = 0;
+    revenue = "";
+    runtime = 0;
+    actor1_name = "";
+    actor2_name = "";
+    actor3_name = "";
+    actor4_name = "";
+    actor5_name = "";
+    director_name = "";
+    producer_name = "";
+    screenplay_writer_name = "";
+    editor_name = "";
+    left = nullptr;
+    right = nullptr;
+    parent = nullptr;
+    color = RED;
 }
 
 Movie::Movie(string _genres, float _popularity, string _revenue, int _runtime, string _title, string actor1, string actor2, string actor3, string actor4, string actor5, string director, string producer, string screenplay, string editor)
 {
-	genres = _genres;
-	popularity = _popularity;
-	revenue = _revenue;
-	runtime = _runtime;
-	title = _title;
-	actor1_name = actor1;
-	actor2_name = actor2;
-	actor3_name = actor3;
-	actor4_name = actor4;
-	actor5_name = actor5;
-	director_name = director;
-	producer_name = producer;
-	screenplay_writer_name = screenplay;
-	editor_name = editor;
-	left = nullptr;
-	right = nullptr;
-	parent = nullptr;
-	color = RED;
+    genres = _genres;
+    popularity = _popularity;
+    revenue = _revenue;
+    runtime = _runtime;
+    title = _title;
+    actor1_name = actor1;
+    actor2_name = actor2;
+    actor3_name = actor3;
+    actor4_name = actor4;
+    actor5_name = actor5;
+    director_name = director;
+    producer_name = producer;
+    screenplay_writer_name = screenplay;
+    editor_name = editor;
+    left = nullptr;
+    right = nullptr;
+    parent = nullptr;
+    color = RED;
 }
 
 void Movie::operator=(Movie* next)
 {
-	genres = next->genres;
-	popularity = next->popularity;
-	revenue = next->revenue;
-	runtime = next->runtime;
-	title = next->title;
-	actor1_name = next->actor1_name;
-	actor2_name = next->actor2_name;
-	actor3_name = next->actor3_name;
-	actor4_name = next->actor4_name;
-	actor5_name = next->actor5_name;
-	director_name = next->director_name;
-	producer_name = next->producer_name;
-	screenplay_writer_name = next->screenplay_writer_name;
-	editor_name = next->editor_name;
+    genres = next->genres;
+    popularity = next->popularity;
+    revenue = next->revenue;
+    runtime = next->runtime;
+    title = next->title;
+    actor1_name = next->actor1_name;
+    actor2_name = next->actor2_name;
+    actor3_name = next->actor3_name;
+    actor4_name = next->actor4_name;
+    actor5_name = next->actor5_name;
+    director_name = next->director_name;
+    producer_name = next->producer_name;
+    screenplay_writer_name = next->screenplay_writer_name;
+    editor_name = next->editor_name;
 }
 
 void Movie::PrintMovie()
@@ -534,7 +535,7 @@ Movie* RBTree::BSTInsert(Movie* root, Movie* newNode) {
 		root->left = BSTInsert(root->left, newNode);
 		root->left->parent = root;
 	}
-	else {// if (newNode->title[0] > root->title[0]) {
+	else{// if (newNode->title[0] > root->title[0]) {
 		root->right = BSTInsert(root->right, newNode);
 		root->right->parent = root;
 	}
@@ -542,13 +543,14 @@ Movie* RBTree::BSTInsert(Movie* root, Movie* newNode) {
 }
 void RBTree::insert(Movie* newNode) {
 	root = BSTInsert(root, newNode);
+	cout << endl << endl << endl;
 	//cout << newNode->title << endl;
 	fixColor(root, newNode);
 }
 void RBTree::inorder(Movie* newNode) {
 	if (newNode == nullptr)
 		return;
-
+	
 	inorder(newNode->left);
 	cout << newNode->title << ", ";
 	inorder(newNode->right);
@@ -577,14 +579,14 @@ void RBTree::searchMovieTitle(string title, Movie* root) {
 		cout << "Screenplay by: " << root->screenplay_writer_name << endl;
 		cout << "Editor: " << root->editor_name << endl;
 	}
-
+	
 	if (title[0] < root->title[0]) {
 		searchMovieTitle(title, root->left);
 	}
 	else {
 		searchMovieTitle(title, root->right);
 	}
-
+	
 	/*
 	vector<Movie*> vecToPrint;
 	stack<Movie*> stack;
@@ -628,47 +630,45 @@ void RBTree::searchMovieTitle(string title, Movie* root) {
 	}
 	 */
 }
+void RBTree::levelOrderTitleSearch(string title, Movie *root) {
+    if(root==nullptr){
+        return;
+    }
 
-void RBTree::levelOrderTitleSearch(string title, Movie* root) {
-	if (root == nullptr) {
-		return;
-	}
-	cout << "THIS IS TITLE " << title << endl;
-	queue<Movie*> q;
-	q.push(root);
-	while (q.empty() == false) {
-		int nodeCount = q.size();
-		while (nodeCount > 0) {
-			Movie* node = q.front();
-			if (node->title == title) {
-				cout << "Found: " << node->title << endl;
-				cout << "Genres: " << node->genres << endl;
-				cout << "Popularity: " << node->popularity << endl;
-				cout << "Revenue: " << node->revenue << endl;
-				cout << "Runtime: " << node->runtime << endl;
-				cout << "Title: " << node->title << endl;
-				cout << "Actor 1: " << node->actor1_name << endl;
-				cout << "Actor 2: " << node->actor2_name << endl;
-				cout << "Actor 3: " << node->actor3_name << endl;
-				cout << "Actor 4: " << node->actor4_name << endl;
-				cout << "Actor 5: " << node->actor5_name << endl;
-				cout << "Director: " << node->director_name << endl;
-				cout << "Producer: " << node->producer_name << endl;
-				cout << "Screenplay by: " << node->screenplay_writer_name << endl;
-				cout << "Editor: " << node->editor_name << endl;
-			}
-			q.pop();
-			if (node->left != nullptr) {
-				q.push(node->left);
-			}
-			if (node->right != nullptr) {
-				q.push(node->right);
-			}
-			nodeCount--;
-		}
-	}
+    queue<Movie*> q;
+    q.push(root);
+    while(q.empty()==false){
+        int nodeCount=q.size();
+        while(nodeCount > 0){
+            Movie* node=q.front();
+            if (node->title == title) {
+                cout << "Found: " << node->title << endl;
+                cout << "Genres: " << node->genres << endl;
+                cout << "Popularity: " << node->popularity << endl;
+                cout << "Revenue: " << node->revenue << endl;
+                cout << "Runtime: " << node->runtime << endl;
+                cout << "Title: " << node->title << endl;
+                cout << "Actor 1: " << node->actor1_name << endl;
+                cout << "Actor 2: " << node->actor2_name << endl;
+                cout << "Actor 3: " << node->actor3_name << endl;
+                cout << "Actor 4: " << node->actor4_name << endl;
+                cout << "Actor 5: " << node->actor5_name << endl;
+                cout << "Director: " << node->director_name << endl;
+                cout << "Producer: " << node->producer_name << endl;
+                cout << "Screenplay by: " << node->screenplay_writer_name << endl;
+                cout << "Editor: " << node->editor_name << endl;
+            }
+            q.pop();
+            if(node->left!=nullptr){
+                q.push(node->left);
+            }
+            if(node->right!=nullptr){
+                q.push(node->right);
+            }
+            nodeCount--;
+        }
+    }
 }
-
 void RBTree::searchMovieActor(string actor, string genre, Movie* root, Movie* stableRoot) {
 	if (root == nullptr) {
 		return;
@@ -693,7 +693,7 @@ void RBTree::searchMovieActor(string actor, string genre, Movie* root, Movie* st
 	}
 		searchMovieActor(actor, genre, root->left, root);
 		searchMovieActor(actor, genre, root->right, root);
-	
+
 
 	/*
 	vector<Movie*> vecToPrint;
@@ -737,6 +737,32 @@ void RBTree::searchMovieActor(string actor, string genre, Movie* root, Movie* st
 		cout << "There are no documented movies with that actor." << endl;
 	}
 	 */
+}
+void RBTree::levelOrderActorSearch(string actor, string genre, Movie *root, Movie *stableRoot) {
+    if(root==nullptr){
+        return;
+    }
+
+    queue<Movie*> q;
+    q.push(root);
+    while(q.empty()==false){
+        int nodeCount=q.size();
+        while(nodeCount > 0){
+            Movie* node=q.front();
+            //(node->genres.find(genre) != string::npos) &&
+            if ((node->genres.find(genre) != string::npos) &&(actor == node->actor1_name || actor == node->actor2_name || actor == node->actor3_name || actor == node->actor4_name || actor == node->actor5_name)) {
+                cout << "Title: " << node->title << endl;
+            }
+            q.pop();
+            if(node->left!=nullptr){
+                q.push(node->left);
+            }
+            if(node->right!=nullptr){
+                q.push(node->right);
+            }
+            nodeCount--;
+        }
+    }
 }
 void RBTree::searchGenre(string genre, Movie* root, Movie* stableRoot) {
 	if (root == nullptr) {
@@ -836,26 +862,33 @@ int main()
 			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchMovieTitle(movieTitle, treePoint->root);
 			chrono::steady_clock::time_point end = chrono::steady_clock::now();
-			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << endl;
-		
-			cout << endl << "//// LEVEL ORDER ////" << movieTitle << endl;
-			chrono::steady_clock::time_point start2 = chrono::steady_clock::now();
-			treePoint->levelOrderTitleSearch(movieTitle, treePoint->root);
-			chrono::steady_clock::time_point end2 = chrono::steady_clock::now();
-			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end2 - start2).count() << endl << endl;
+			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count() <<endl;
+
+			cout<< endl<< "//// LEVEL ORDER ////" << movieTitle<<endl;
+            chrono::steady_clock::time_point start2 = chrono::steady_clock::now();
+            treePoint->levelOrderTitleSearch(movieTitle, treePoint->root);
+            chrono::steady_clock::time_point end2 = chrono::steady_clock::now();
+            cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end2 - start2).count()<<endl;
 		}
 		else if (stoi(input) == 2) {
-			cout << "Insert an actor: ";
-			cin.ignore();
-			getline(cin, movieActor);
-			cout << "Insert a genre: ";
-			cin.ignore();
-			getline(cin, movieGenre);
-			// search
-			chrono::steady_clock::time_point start = chrono::steady_clock::now();
-			treePoint->searchMovieActor(movieActor, movieGenre, treePoint->root, treePoint->root);
-			chrono::steady_clock::time_point end = chrono::steady_clock::now();
-			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << endl << endl;
+            cout << "Insert an actor: ";
+            cin.ignore();
+            getline(cin, movieActor);
+            cout << "Insert a genre: ";
+            cin.ignore();
+            getline(cin, movieGenre);
+            // search
+            chrono::steady_clock::time_point start = chrono::steady_clock::now();
+            treePoint->searchMovieActor(movieActor, movieGenre, treePoint->root, treePoint->root);
+            chrono::steady_clock::time_point end = chrono::steady_clock::now();
+            cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << endl << endl;
+
+            cout<< endl<< "//// LEVEL ORDER ////" << movieTitle<<endl;
+            chrono::steady_clock::time_point start2 = chrono::steady_clock::now();
+            treePoint->levelOrderActorSearch(movieActor,movieGenre, treePoint->root, treePoint->root);
+            chrono::steady_clock::time_point end2 = chrono::steady_clock::now();
+            cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end2 - start2).count()<<endl;
+
 		}
 		else if (stoi(input) == 3) {
 			cout << "Insert a genre: ";
@@ -865,7 +898,7 @@ int main()
 			chrono::steady_clock::time_point start = chrono::steady_clock::now();
 			treePoint->searchGenre(movieGenre, treePoint->root, treePoint->root);
 			chrono::steady_clock::time_point end = chrono::steady_clock::now();
-			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << endl << endl;
+			cout << "Microseconds: " << chrono::duration_cast<chrono::microseconds>(end - start).count()<<endl;
 		}
 	}
 }
@@ -883,7 +916,7 @@ void readCSV(RBTree* tree, HashTable hash)
 
 	if (inClean.is_open() && inRaw.is_open()) {
 		// can lower conditional when testing so the entire file doesn't need to be run every time. Takes appprox 2mins 10s without adding to data structure
-		while (temp < 10000) { //328842 is max, error after 198152-> correlates to id: 314304
+		while (temp < 100) { //328842 is max, error after 198152-> correlates to id: 314304
 			Movie* node = new Movie();
 			Movie movie = Movie();
 
