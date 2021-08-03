@@ -649,11 +649,11 @@ void RBTree::searchMovieActor(string actor, Movie* root, Movie* stableRoot) {
 		cout << "Screenplay by: " << root->screenplay_writer_name << endl;
 		cout << "Editor: " << root->editor_name << endl;*/
 	}
-	if (stableRoot->title[0] < root->title[0]) {
-		searchMovieActor(actor, root->left, stableRoot);
+	if (stableRoot->title < root->title) {
+		searchMovieActor(actor, root->left, root);
 	}
 	else {
-		searchMovieActor(actor, root->right, stableRoot);
+		searchMovieActor(actor, root->right, root);
 	}
 
 	/*
@@ -719,11 +719,11 @@ void RBTree::searchGenre(string genre, Movie* root, Movie* stableRoot) {
 		cout << "Screenplay by: " << root->screenplay_writer_name << endl;
 		cout << "Editor: " << root->editor_name << endl;*/
 	}
-	if (stableRoot->title[0] < root->title[0]) {
-		searchGenre(genre, root->left, stableRoot);
+	if (stableRoot->title < root->title) {
+		searchGenre(genre, root->left, root);
 	}
 	else {
-		searchGenre(genre, root->right, stableRoot);
+		searchGenre(genre, root->right, root);
 	}
 
 
