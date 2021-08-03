@@ -230,7 +230,7 @@ public:
         bool printed = false;
 
         for (int i = 0; i < arr[index].size(); i++) {
-            if (arr[index][i].first == title) {
+            if (arr[index][i].second.title == title) {
                 Print(arr[index][i].second);
                 printed = true;
             }
