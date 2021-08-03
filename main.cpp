@@ -17,6 +17,9 @@ public:
 	Movie();
 	Movie(string _genres, float _popularity, string _revenue, int _runtime, string _title, string actor1, string actor2, string actor3, string actor4, string actor5, string director, string producer, string screenplay, string editor);
 	void operator=(Movie* next);
+	Movie(const Movie &next);
+	Movie& operator=(Movie&& next);
+	Movie& operator=(Movie& next);
 	void PrintMovie();
 	void setGenres(string _genres);
 	void setPop(string _pop);
@@ -82,6 +85,77 @@ public:
 	string editor_name;
 };
 
+Movie::Movie(const Movie& next) {
+    genres = next.genres;
+    popularity = next.popularity;
+    revenue = next.revenue;
+    runtime = next.runtime;
+    title = next.title;
+    actor1_name = next.actor1_name;
+    actor2_name = next.actor2_name;
+    actor3_name = next.actor3_name;
+    actor4_name = next.actor4_name;
+    actor5_name = next.actor5_name;
+    director_name = next.director_name;
+    producer_name = next.producer_name;
+    screenplay_writer_name = next.screenplay_writer_name;
+    editor_name = next.editor_name;
+}
+
+Movie& Movie::operator=(Movie& next)
+{
+    genres = next.genres;
+    popularity = next.popularity;
+    revenue = next.revenue;
+    runtime = next.runtime;
+    title = next.title;
+    actor1_name = next.actor1_name;
+    actor2_name = next.actor2_name;
+    actor3_name = next.actor3_name;
+    actor4_name = next.actor4_name;
+    actor5_name = next.actor5_name;
+    director_name = next.director_name;
+    producer_name = next.producer_name;
+    screenplay_writer_name = next.screenplay_writer_name;
+    editor_name = next.editor_name;
+    return *this;
+}
+
+Movie& Movie::operator=(Movie&& next)
+{
+    genres = next.genres;
+    popularity = next.popularity;
+    revenue = next.revenue;
+    runtime = next.runtime;
+    title = next.title;
+    actor1_name = next.actor1_name;
+    actor2_name = next.actor2_name;
+    actor3_name = next.actor3_name;
+    actor4_name = next.actor4_name;
+    actor5_name = next.actor5_name;
+    director_name = next.director_name;
+    producer_name = next.producer_name;
+    screenplay_writer_name = next.screenplay_writer_name;
+    editor_name = next.editor_name;
+
+    next.genres = "";
+    next.popularity = 1.0;
+    next.revenue = "";
+    next. runtime = 1;
+    next.title = "";
+    next.actor1_name = "";
+    next.actor2_name = "";
+    next.actor3_name = "";
+    next.actor4_name = "";
+    next.actor5_name = "";
+    next.director_name = "";
+    next.producer_name = "";
+    next.screenplay_writer_name = "";
+    next.editor_name = "";
+
+    return *this;
+}
+
 class HashTable {
 public:
 	//the number of bins in the table
@@ -112,7 +186,7 @@ public:
 	void Insert(Movie movie) {
 		pair<string, Movie> pair;
 		pair.first = movie.title;
-		pair.second = movie;
+		pair.second = Movie(movie);
 		arr[Hash(pair.first)].push_back(pair);
 
 		//increment the movie count
@@ -207,6 +281,15 @@ public:
 			cout << "There are no documented movies with that actor." << endl;
 		}
 	}
+	
+	//used for testing
+    	void PrintAll() {
+            for (int i = 0; i < capacity; i++) {
+            	for (int j = 0; j < arr[i].size(); j++) {
+                	Print(arr[i][j].second);
+            	}
+            }
+        }
 
 };
 
